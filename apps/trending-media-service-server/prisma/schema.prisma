@@ -1,0 +1,61 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Video {
+  createdAt     DateTime           @default(now())
+  description   String?
+  id            String             @id @default(auto()) @map("_id") @db.ObjectId
+  platform      EnumVideoPlatform?
+  title         String?
+  trendingScore Float?
+  updatedAt     DateTime           @updatedAt
+  url           String?
+}
+
+model Post {
+  content       String?
+  createdAt     DateTime          @default(now())
+  id            String            @id @default(auto()) @map("_id") @db.ObjectId
+  platform      EnumPostPlatform?
+  title         String?
+  trendingScore Float?
+  updatedAt     DateTime          @updatedAt
+  url           String?
+}
+
+model User {
+  createdAt         DateTime           @default(now())
+  email             String?            @unique
+  firstName         String?
+  id                String             @id @default(auto()) @map("_id") @db.ObjectId
+  lastName          String?
+  password          String
+  roles             Json
+  updatedAt         DateTime           @updatedAt
+  username          String             @unique
+  userVerifications UserVerification[]
+}
+
+model UserVerification {
+  createdAt         DateTime  @default(now())
+  expiresAt         DateTime?
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  updatedAt         DateTime  @updatedAt
+  user              User?     @relation(fields: [userId], references: [id])
+  userId            String?   @db.ObjectId
+  verificationToken String?
+}
+
+enum EnumVideoPlatform {
+  Option1
+}
+
+enum EnumPostPlatform {
+  Option1
+}
